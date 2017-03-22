@@ -23,4 +23,8 @@ class HelloWorldController extends BaseController {
     public static function asiansivu() {
         View::make('asiansivu.html');
     }
+    
+    public static function tarkasteleasiaa(){
+        View::make('huudataiosta.html');
+    }
 }

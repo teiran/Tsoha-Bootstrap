@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tuoli</h1>
+<!-- Painikkeet tähän -->
+<p>
+    <button class="btn btn-danger">osta</button> <a href="#" class="btn btn-default">Muokkaa</a>
+</p>
+<p>
+    <button class="btn btn-danger">huuda hintaa (+5)</button> <a href="#" class="btn btn-default">Muokkaa</a>
+</p>
+<!-- Tiedot tulee listana tähän -->
+<ul>
+    <li><strong>Julkaisupäivä:</strong> 11.11.2017</li>
+    <li><strong>Viimeinen Huutopäivä</strong> 11.12.2017</li>
+    <li><strong>Hinta</strong> 200</li>
+    <li><strong>ostettu</strong> <label class="label label-danger">ei vielä</label></li>
+    <li><strong>Hinta (osta)</strong> 500</li>
+</ul>
+<!-- Kuvaus tulee tähän -->
+<p>
+    Hyväkuntaoinen tuoli
+</p>
+{% endblock %}

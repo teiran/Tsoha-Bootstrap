@@ -20,3 +20,6 @@ $routes->get('/listautumissivu', function() {
     HelloWorldController::listautumissivu();
 });
 
+$routes->get('/tarkasteleasiaa', function() {
+    HelloWorldController::tarkasteleasiaa();
+});

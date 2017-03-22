@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Huudettava asia x</h1>
+
+  <p>
+    <a href="#" class="btn btn-success">luo huuto</a>
+  </p>
+
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Nimi</th>
+        <th>Julkaisupäivä</th>
+        <th>Viimeinen huutopäivä</th>
+        <th>hinta</th>
+        <th>viimeinen huuto</th>
+        <th>kuvaus</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><a href="#">Tuoli</a></td>
+        <td>11.11.2017</td>
+        <td>11.12.2017</td>
+        <td>200</td>
+        <td>viimeinen huuto</td>
+        <td>Tuoli on hyvässä kunnossa</td>
+        <th><a class="btn btn-default btn-sm" href="#">huudo/osta</a></th>
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}

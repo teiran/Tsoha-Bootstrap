@@ -1,4 +1,4 @@
-CREATE TABLE Huutaja(
+CREATE TABLE Kayttaja(
   id SERIAL PRIMARY KEY, 
   nimi varchar(50) NOT NULL, 
   salasana varchar(50) NOT NULL,
@@ -19,6 +19,7 @@ CREATE TABLE Asia(
   hinta INTEGER NOT NULL,
   huutoaika DATE NOT NULL,
   lisätty DATE NOT NULL,
+  hintaosta INTEGER NOT NULL,
   ostettu BOOLEAN,
   kuvaus varchar(200)
 );
