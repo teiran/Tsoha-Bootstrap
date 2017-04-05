@@ -18,9 +18,9 @@ CREATE TABLE Asia(
   nimi varchar(50) NOT NULL,
   hinta INTEGER NOT NULL,
   huutoaika DATE NOT NULL,
-  lisätty DATE NOT NULL,
+  lisatty DATE NOT NULL,
   hintaosta INTEGER NOT NULL,
-  ostettu BOOLEAN,
+  ostettu BOOLEAN DEFAULT FALSE,
   kuvaus varchar(200)
 );
 

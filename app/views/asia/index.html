@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Ostettavat Asiat</h1>
+
+  <p>
+    <a href="{{base_path}}/asia/new" class="btn btn-success">lisää asia</a>
+  </p>
+
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Nimi</th>
+        <th>hinta</th>
+        <th>huutoaika</th>
+        <th>lisätty</th>
+        <th>hintaosta</th>
+        <th>ostettu</th>
+        <th>kuvaus</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for asia in asiat %}
+        <tr>
+          <td><a href="{{base_path}}/asia/{{asia.id}}">{{asia.nimi}}</td>
+          <td>{{asia.hinta}}</td>
+          <td>{{asia.huutoaika}}</td>
+          <td>{{asia.lisätty}}</td>
+          <td>{{asia.hintaosta}}</td>
+          <td>
+              {% if asia.ostettu %}
+                <label class="label label-danger">ostettu
+              {% else %}
+                <label class="label label-success">huudettavissa
+              {% endif %}
+          </td>
+          <td>{{asia.kuvaus}}</td>
+          <td><a class="btn btn-default btn-sm" href="{{base_path}}/asia/{{asia.id}}/edit">Muokkaa</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

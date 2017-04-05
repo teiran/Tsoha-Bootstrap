@@ -8,8 +8,11 @@ class HelloWorldController extends BaseController {
     }
 
     public static function sandbox() {
-        // Testaa koodiasi täällä
-        View::make('helloworld.html');
+        $skyrim = Asia::find(1);
+        $games = Asia::all();
+        // Kint-luokan dump-metodi tulostaa muuttujan arvon
+        Kint::dump($games);
+        Kint::dump($skyrim);;
     }
 
     public static function kirjautumunen() {

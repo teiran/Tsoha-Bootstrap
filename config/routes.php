@@ -1,25 +1,22 @@
 <?php
 
 $routes->get('/', function() {
-    HelloWorldController::index();
+    AsiaController::index();
+});
+// Pelien listaussivu
+$routes->get('/asia', function() {
+    AsiaController::index();
 });
 
-$routes->get('/hiekkalaatikko', function() {
-    HelloWorldController::sandbox();
+// Pelin esittelysivu
+/*$routes->get('/asia/:id', function($id) {
+    AsiaController::show($id);
 });
-
-$routes->get('/kirjaudu', function() {
-    HelloWorldController::kirjautumunen();
+*/
+$routes->post('/asia', function() {
+    AsiaController::store();
 });
-
-$routes->get('/asiansivu', function() {
-    HelloWorldController::asiansivu();
-});
-
-$routes->get('/listautumissivu', function() {
-    HelloWorldController::listautumissivu();
-});
-
-$routes->get('/tarkasteleasiaa', function() {
-    HelloWorldController::tarkasteleasiaa();
+// Pelin lisäyslomakkeen näyttäminen
+$routes->get('/asia/new', function() {
+    AsiaController::create();
 });
