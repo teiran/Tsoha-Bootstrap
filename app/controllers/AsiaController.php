@@ -29,19 +29,71 @@ class AsiaController extends BaseController {
             'hinta' => $params['hinta'],
             'huutoaika' => $params['huutoaika'],
             'hintaosta' => $params['hintaosta'],
-            'lisätty' => $params['lisätty'],
+            'lisatty' => $params['lisatty'],
             'kuvaus' => $params['kuvaus']
         ));
+        $errors = $asia->errors();
 
-        // Kutsutaan alustamamme olion save metodia, joka tallentaa olion tietokantaan
-        $asia->tallenna();
+        if (count($errors) == 0) {
+            // Peli on validi, hyvä homma!
+            $asia->tallenna();
+
+            Redirect::to('/asia', array('message' => 'Asia on lisätty huutokauppaan!'));
+        } else {
+            // Pelissä oli jotain vikaa :(
+            View::make('asia/new.html', array('errors' => $errors, 'attributes' => $asia));
+        }
+
+
 
         // Ohjataan käyttäjä lisäyksen jälkeen pelin esittelysivulle
-        Redirect::to('/asia/' . $asia->id, array('message' => 'Asia on lisätty huutokauppaan!'));
     }
-    
+
     public static function create() {
         View::make('asia/new.html');
+    }
+
+    public static function edit($id) {
+        $asia = Asia::find($id);
+        View::make('asia/edit.html', array('asia' => $asia));
+    }
+
+    // Pelin muokkaaminen (lomakkeen käsittely)
+    public static function update($id) {
+        $params = $_POST;
+
+        $attributes = array(
+            'id' => $id,
+            'nimi' => $params['nimi'],
+            'hinta' => $params['hinta'],
+            'huutoaika' => $params['huutoaika'],
+            'hintaosta' => $params['hintaosta'],
+            'lisatty' => $params['lisatty'],
+            'kuvaus' => $params['kuvaus']
+        );
+        // Alustetaan Game-olio käyttäjän syöttämillä tiedoilla
+        $asia = new Asia($attributes);
+        $errors = $asia->errors();
+
+        if (count($errors) > 0) {
+            View::make('asia/edit.html', array('errors' => $errors, 'attributes' => $attributes));
+        } else {
+            // Kutsutaan alustetun olion update-metodia, joka päivittää pelin tiedot tietokannassa
+            $asia->update();
+
+            Redirect::to('/asia', array('message' => 'Asiaa on muokattu onnistuneesti!'));
+        }
+    }
+
+    // Pelin poistaminen
+    public static function destroy($id) {
+        // Alustetaan Game-olio annetulla id:llä
+        $asia = new Asia(array('id' => $id));
+        // Kutsutaan Game-malliluokan metodia destroy, joka poistaa pelin sen id:llä
+        $asia->destroy();
+
+        // Ohjataan käyttäjä pelien listaussivulle ilmoituksen kera
+        Redirect::to('/asia', array('message' => 'Asia on poistettu onnistuneesti!'));
     }
 
 }

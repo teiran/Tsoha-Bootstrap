@@ -12,7 +12,7 @@
 </div>
 {% endif %}
 
-<form method="post" action="{{base_path}}/asia">
+<form method="post" action="{{base_path}}/asia/{{asia.id}}/edit">
     <div class="form-group">
         <label>Nimi</label>
         <input name="nimi" class="form-control" type="text">
@@ -41,7 +41,11 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Lisää</button>
+        <button type="submit" class="btn btn-primary">muokkaa</button>
     </div>
+</form>
+
+<form method="post" action="{{base_path}}/asia/{{asia.id}}/destroy" style="display: inline-block;">
+  <button type="submit" class="btn btn-danger">Poista</button>
 </form>
 {% endblock %}

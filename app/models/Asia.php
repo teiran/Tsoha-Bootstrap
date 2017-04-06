@@ -17,16 +17,66 @@ class Asia extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_name', 'validate_hinta', 'validate_hintaosta');
+    }
+
+    public function validate_name() {
+        $errors = array();
+        if ($this->nimi == '' || $this->nimi == null) {
+            $errors[] = 'Nimi ei saa olla tyhjä!';
+        }
+        if (strlen($this->nimi) < 5) {
+            $errors[] = 'Nimen pituuden tulee olla vähintään viisi merkkiä!';
+        }
+
+        return $errors;
+    }
+
+    public function validate_hinta() {
+        $errors = array();
+        if ($this->hinta == '' || $this->hinta == null) {
+            $errors[] = 'Hinta ei saa olla tyhjä!';
+        }
+        if ($this->hinta < 4) {
+            $errors[] = 'Minimi hinta 5';
+        }
+
+        return $errors;
     }
     
+    public function validate_hintaosta() {
+        $errors = array();
+        if ($this->hintaosta == '' || $this->hintaosta == null) {
+            $errors[] = 'hintaosta ei saa olla tyhjä!';
+        }
+        if ($this->hinta > $this->hintaosta) {
+            $errors[] = 'ostohinnan tarvitsee olla isompi kui hinnan';
+        }
+
+        return $errors;
+    }
+
     public function tallenna() {
-        $query = DB::connection()->prepare('INSERT INTO Asia (nimi, hinta, huutoaika, hintaosta, lisatty, kuvaus) VALUES (:nimi, :hinta, :huutoaika, :hintaosta, :lisatty, :kuvaus) RETURNING id');
-        
-        $query->execute(array('nimi' => $this->nimi, 'hinta' => $this->hinta, 'huutoaika' => $this->huutoaika, 'hintaosta' => $this->hintaosta, 'lisatty' => $this->lisatty, 'kuvaus' => $this->kuvaus));
-        
+        $query = DB::connection()->prepare('INSERT INTO Asia (nimi, hinta, huutoaika, lisatty, hintaosta, kuvaus) VALUES (:nimi, :hinta, :huutoaika, :lisatty, :hintaosta, :kuvaus) RETURNING id');
+
+        $query->execute(array('nimi' => $this->nimi, 'hinta' => $this->hinta, 'huutoaika' => $this->huutoaika, 'lisatty' => $this->lisatty, 'hintaosta' => $this->hintaosta, 'kuvaus' => $this->kuvaus));
+
         $row = $query->fetch();
-        
+
         $this->id = $row['id'];
+    }
+    
+    public function update(){
+        $query = DB::connection()->prepare('UPDATE Asia SET (nimi, hinta, huutoaika, lisatty, hintaosta, kuvaus) = (:nimi, :hinta, :huutoaika, :lisatty, :hintaosta, :kuvaus) WHERE id = :id');
+
+        $query->execute(array('nimi' => $this->nimi, 'hinta' => $this->hinta, 'huutoaika' => $this->huutoaika, 'lisatty' => $this->lisatty, 'hintaosta' => $this->hintaosta, 'kuvaus' => $this->kuvaus, 'id' => $this->id));
+
+        $row = $query->fetch();
+    }
+    
+    public function destroy(){
+        $query = DB::connection()->prepare('DELETE FROM Asia WHERE id = :id');
+        $query->execute(array('id' => $this->id));
     }
 
     public static function all() {

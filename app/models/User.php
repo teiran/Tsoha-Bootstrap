@@ -7,31 +7,26 @@
  */
 
 /**
- * Description of Kayttaja
+ * Description of User
  *
  * @author tierahir
  */
-class Kayttaja extends BaseModel {
+class User extends BaseModel {
 
     public $id, $nimi, $salasana, $tili, $kate, $yllapitaja;
+
+    //put your code here
 
     public function __construct($attributes) {
         parent::__construct($attributes);
     }
 
-    public static function all() {
-        // Alustetaan kysely tietokantayhteydellämme
-        $query = DB::connection()->prepare('SELECT * FROM Kayttaja');
-        // Suoritetaan kysely
-        $query->execute();
-        // Haetaan kyselyn tuottamat rivit
-        $rows = $query->fetchAll();
-        $kayttaja = array();
-
-        // Käydään kyselyn tuottamat rivit läpi
-        foreach ($rows as $row) {
-            // Tämä on PHP:n hassu syntaksi alkion lisäämiseksi taulukkoon :)
-            $kayttaja[] = new Kayttaja(array(
+    public static function authenticate($nimi, $salasana) {
+        $query = DB::connection()->prepare('SELECT * FROM Kayttaja WHERE nimi = :nimi AND salasana = :salasana LIMIT 1');
+        $query->execute(array('nimi' => $nimi, 'salasana' => $salasana));
+        $row = $query->fetch();
+        if ($row) {
+            $user = new User(array(
                 'id' => $row['id'],
                 'nimi' => $row['nimi'],
                 'salasana' => $row['salasana'],
@@ -39,18 +34,19 @@ class Kayttaja extends BaseModel {
                 'kate' => $row['kate'],
                 'yllapitaja' => $row['yllapitaja']
             ));
+            return $user;
+        } else {
+            return null;
         }
-
-        return $kayttaja;
     }
-
+    
     public static function find($id) {
         $query = DB::connection()->prepare('SELECT * FROM Kayttaja WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
 
         if ($row) {
-            $kayttaja = new Kayttaja(array(
+            $user = new User(array(
                 'id' => $row['id'],
                 'nimi' => $row['nimi'],
                 'salasana' => $row['salasana'],
@@ -59,7 +55,7 @@ class Kayttaja extends BaseModel {
                 'yllapitaja' => $row['yllapitaja']
             ));
 
-            return $kayttaja;
+            return $user;
         }
 
         return null;
