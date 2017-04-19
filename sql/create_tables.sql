@@ -2,8 +2,8 @@ CREATE TABLE Kayttaja(
   id SERIAL PRIMARY KEY, 
   nimi varchar(50) NOT NULL, 
   salasana varchar(50) NOT NULL,
-  tili INTEGER,
-  kate INTEGER,
+  tili varchar(30),
+  kate varchar(30),
   yllapitaja boolean DEFAULT FALSE
 );
 CREATE TABLE Valitaulu(

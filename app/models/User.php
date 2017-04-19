@@ -17,8 +17,44 @@ class User extends BaseModel {
 
     //put your code here
 
+
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_name', 'validate_salasana');
+    }
+
+    public function validate_name() {
+        $errors = array();
+        if ($this->nimi == '' || $this->nimi == null) {
+            $errors[] = 'Nimi ei saa olla tyhjä!';
+        }
+        if (strlen($this->nimi) < 5) {
+            $errors[] = 'Nimen pituuden tulee olla vähintään viisi merkkiä!';
+        }
+
+        return $errors;
+    }
+
+    public function validate_salasana() {
+        $errors = array();
+        if ($this->salasana == '' || $this->salasana == null) {
+            $errors[] = 'Aalasana ei saa olla tyhjä!';
+        }
+        if (strlen($this->salasana) < 8) {
+            $errors[] = 'Salasana pituuden tulee olla vähintään kahdeksan merkkiä!';
+        }
+
+        return $errors;
+    }
+
+    public function tallenna() {
+        $query = DB::connection()->prepare('INSERT INTO Kayttaja (nimi, salasana, tili, kate) VALUES (:nimi, :salasana, :tili, :kate) RETURNING id');
+
+        $query->execute(array('nimi' => $this->nimi, 'salasana' => $this->salasana, 'tili' => $this->tili, 'kate' => $this->kate));
+
+        $row = $query->fetch();
+
+        $this->id = $row['id'];
     }
 
     public static function authenticate($nimi, $salasana) {
@@ -39,7 +75,7 @@ class User extends BaseModel {
             return null;
         }
     }
-    
+
     public static function find($id) {
         $query = DB::connection()->prepare('SELECT * FROM Kayttaja WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $id));

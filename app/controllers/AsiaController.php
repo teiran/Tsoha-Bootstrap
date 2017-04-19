@@ -21,6 +21,7 @@ class AsiaController extends BaseController {
     }
 
     public static function store() {
+        self::check_logged_in();
         // POST-pyynnön muuttujat sijaitsevat $_POST nimisessä assosiaatiolistassa
         $params = $_POST;
         // Alustetaan uusi Game-luokan olion käyttäjän syöttämillä arvoilla
@@ -50,16 +51,19 @@ class AsiaController extends BaseController {
     }
 
     public static function create() {
+        self::check_logged_in();
         View::make('asia/new.html');
     }
 
     public static function edit($id) {
+        self::check_logged_in();
         $asia = Asia::find($id);
         View::make('asia/edit.html', array('asia' => $asia));
     }
 
     // Pelin muokkaaminen (lomakkeen käsittely)
     public static function update($id) {
+        self::check_logged_in();
         $params = $_POST;
 
         $attributes = array(
@@ -87,6 +91,7 @@ class AsiaController extends BaseController {
 
     // Pelin poistaminen
     public static function destroy($id) {
+        self::check_logged_in();
         // Alustetaan Game-olio annetulla id:llä
         $asia = new Asia(array('id' => $id));
         // Kutsutaan Game-malliluokan metodia destroy, joka poistaa pelin sen id:llä
