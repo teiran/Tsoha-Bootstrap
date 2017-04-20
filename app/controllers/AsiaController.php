@@ -22,6 +22,7 @@ class AsiaController extends BaseController {
 
     public static function store() {
         self::check_logged_in();
+        $user = self::get_user_logged_in();
         // POST-pyynnön muuttujat sijaitsevat $_POST nimisessä assosiaatiolistassa
         $params = $_POST;
         // Alustetaan uusi Game-luokan olion käyttäjän syöttämillä arvoilla
@@ -37,8 +38,12 @@ class AsiaController extends BaseController {
 
         if (count($errors) == 0) {
             // Peli on validi, hyvä homma!
-            $asia->tallenna();
-
+            $id = $asia->tallenna();
+            $valitaulu = new Valitaulu(array(
+                'luoja_id' => $user->id,
+                'asia_id' => $id
+            ));
+            $valitaulu->tallenna();
             Redirect::to('/asia', array('message' => 'Asia on lisätty huutokauppaan!'));
         } else {
             // Pelissä oli jotain vikaa :(
@@ -59,6 +64,34 @@ class AsiaController extends BaseController {
         self::check_logged_in();
         $asia = Asia::find($id);
         View::make('asia/edit.html', array('asia' => $asia));
+    }
+    
+    public static function lyo($id){
+        self::check_logged_in();
+        $user = self::get_user_logged_in();
+        $params = $_POST;
+        $valitaulu = Valitaulu::find($id);
+        
+        $attributes = array(
+            'id' => $valitaulu->id,
+            'luoja_id' => $valitaulu->luoja_id,
+            'asia_id' => $id,
+            'Huutaja_id' => $user->id
+        );
+        $valitaulu2 = new Valitaulu($attributes);
+        $valitaulu2->update();
+        $asia = Asia::find($id);
+        $attributes = array(
+            'id' => $id,
+            'nimi' => $asia->nimi,
+            'hinta' => $asia->hinta + 1,
+            'huutoaika' => $asia->huutoaika,
+            'hintaosta' => $asia->hintaosta,
+            'lisatty' => $asia->lisatty,
+            'kuvaus' => $asia->kuvaus
+        );
+        $asia->update();
+        Redirect::to('/asia', array('message' => 'lyötyvetoa onnistuneesti'));
     }
 
     // Pelin muokkaaminen (lomakkeen käsittely)

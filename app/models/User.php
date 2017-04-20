@@ -55,6 +55,7 @@ class User extends BaseModel {
         $row = $query->fetch();
 
         $this->id = $row['id'];
+        
     }
 
     public static function authenticate($nimi, $salasana) {

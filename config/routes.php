@@ -22,11 +22,9 @@ $routes->get('/asia/new', 'check_logged_in', function() {
     AsiaController::create();
 });
 $routes->post('/asia/:id/edit', 'check_logged_in', function($id) {
-    // Pelin muokkaaminen
     AsiaController::update($id);
 });
 $routes->get('/asia/:id/edit', 'check_logged_in', function($id) {
-    // Pelin muokkauslomakkeen esittäminen
     AsiaController::edit($id);
 });
 
@@ -36,6 +34,9 @@ $routes->post('/asia', 'check_logged_in', function() {
 $routes->post('/asia/:id/destroy', 'check_logged_in', function($id) {
     // Pelin poisto
     AsiaController::destroy($id);
+});
+$routes->post('/asia/:id/lyo', 'check_logged_in', function($id) {
+    AsiaController::lyo($id);
 });
 
 // ...
@@ -56,4 +57,6 @@ $routes->post('/logout', function() {
 $routes->get('/newuser', function() {
     UserController::create();
 });
+
+
 

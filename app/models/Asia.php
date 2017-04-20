@@ -64,6 +64,7 @@ class Asia extends BaseModel {
         $row = $query->fetch();
 
         $this->id = $row['id'];
+        return $this->id;
     }
     
     public function update(){

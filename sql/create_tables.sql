@@ -9,8 +9,8 @@ CREATE TABLE Kayttaja(
 CREATE TABLE Valitaulu(
   id SERIAL PRIMARY KEY,
   luoja_id INTEGER,
-  Asia_id INTEGER,
-  Huutaja_id INTEGER
+  asia_id INTEGER,
+  huutaja_id INTEGER
 );
 
 CREATE TABLE Asia(
