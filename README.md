@@ -2,10 +2,10 @@
 
 Yleisiä linkkejä:
 
-* [Linkki sovellukseeni(lisääminen toimii lisäämis napista ja muokkaamis ja postaminen muokkaus sivulta](http://tierahir.users.cs.helsinki.fi/titolabra2/) 
-* [Linkki tietokanta yhteyteen mistä näkee kirjautumisen ja uuden asian luonnin jälkeen valitys taulun ilmestymisen jossa käyttäjä ja asia osapuolina (valitettavasti huutaminen ei aivan vielä onnistu)](http://tierahir.users.cs.helsinki.fi/titolabra2/tietokantayhteys)
+* [Linkkki etusivulle](http://tierahir.users.cs.helsinki.fi/titolabra2/) 
 
-* [Linkki dokumentaatiooni](https://github.com/teiran/Tsoha-Bootstrap/blob/master/doc/Documentaatio.pdf)
+
+* [Linkki dokumentaatiooni](https://github.com/teiran/Tsoha-Bootstrap/blob/master/doc/documentaatio.pdf)
 
 ## Työn aihe
 
