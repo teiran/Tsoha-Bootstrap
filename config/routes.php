@@ -38,6 +38,13 @@ $routes->post('/asia/:id/destroy', 'check_logged_in', function($id) {
 $routes->post('/asia/:id/lyo', 'check_logged_in', function($id) {
     AsiaController::lyo($id);
 });
+$routes->post('/asia/:id/ostettu', 'check_logged_in', function($id) {
+    AsiaController::osta($id);
+});
+$routes->get('/asia/:id/lyo', 'check_logged_in', function($id) {
+    // Kirjautumislomakkeen esittäminen
+    AsiaController::huudataiosta($id);
+});
 
 // ...
 $routes->get('/login', function() {

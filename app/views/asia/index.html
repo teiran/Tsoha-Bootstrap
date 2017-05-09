@@ -18,6 +18,8 @@
         <th>lisätty</th>
         <th>hintaosta</th>
         <th>ostettu</th>
+        <th>myyjä</th>
+        <th>huutaja tai ostaja</th>
         <th>kuvaus</th>
         <th></th>
       </tr>
@@ -38,9 +40,21 @@
                 <label class="label label-success">huudettavissa
               {% endif %}
           </td>
+          <td>{{asia.luoja}}</td>
+          <td>{{asia.huutaja}}</td>
           <td>{{asia.kuvaus}}</td>
-          <td><a class="btn btn-default btn-sm" href="{{base_path}}/asia/{{asia.id}}/edit">Muokkaa</a></td>
-          <td><a method="post" action="{{base_path}}/asia/{{asia.id}}/lyo">tulee likki ei vielä valmis</a></td>
+          {% if asia.ostettu %}
+          {% else %}
+          <td>
+          {% if asia.sameuser %}
+           {% if asia.nobidder %}
+          <a class="btn btn-default btn-sm" href="{{base_path}}/asia/{{asia.id}}/edit">Muokkaa</a>
+          {% endif %}
+          {% else %}
+          <a class="btn btn-default btn-sm" href="{{base_path}}/asia/{{asia.id}}/lyo">lyotaiosta</a>
+          {% endif %}
+          </td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>

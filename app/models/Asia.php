@@ -13,9 +13,12 @@
  */
 class Asia extends BaseModel {
 
-    public $id, $nimi, $hinta, $huutoaika, $lisatty, $hintaosta, $ostettu, $kuvaus;
+    public $id, $nimi, $hinta, $huutoaika, $lisatty, $hintaosta, $ostettu, $kuvaus, $huutaja, $sameuser, $nobidder, $luoja, $vanhahinta;
 
     public function __construct($attributes) {
+        if (!is_null($this->hinta)) {
+            $this->vanhahinta = $this->hinta;
+        }
         parent::__construct($attributes);
         $this->validators = array('validate_name', 'validate_hinta', 'validate_hintaosta');
     }
@@ -40,10 +43,15 @@ class Asia extends BaseModel {
         if ($this->hinta < 4) {
             $errors[] = 'Minimi hinta 5';
         }
+        if (!is_null($this->vanhahinta)) {
+            if ($this->hinta <= $this->vanhahinta) {
+                $errors[] = 'Huudon tavitsee olla isompi kuin 0';
+            }
+        }
 
         return $errors;
     }
-    
+
     public function validate_hintaosta() {
         $errors = array();
         if ($this->hintaosta == '' || $this->hintaosta == null) {
@@ -66,23 +74,32 @@ class Asia extends BaseModel {
         $this->id = $row['id'];
         return $this->id;
     }
-    
-    public function update(){
+
+    public function update() {
         $query = DB::connection()->prepare('UPDATE Asia SET (nimi, hinta, huutoaika, lisatty, hintaosta, kuvaus) = (:nimi, :hinta, :huutoaika, :lisatty, :hintaosta, :kuvaus) WHERE id = :id');
 
         $query->execute(array('nimi' => $this->nimi, 'hinta' => $this->hinta, 'huutoaika' => $this->huutoaika, 'lisatty' => $this->lisatty, 'hintaosta' => $this->hintaosta, 'kuvaus' => $this->kuvaus, 'id' => $this->id));
 
         $row = $query->fetch();
     }
-    
-    public function destroy(){
+
+    public function update2() {
+        $query = DB::connection()->prepare('UPDATE Asia SET (nimi, hinta, huutoaika, lisatty, hintaosta, ostettu, kuvaus) = (:nimi, :hinta, :huutoaika, :lisatty, :hintaosta, :ostettu, :kuvaus) WHERE id = :id');
+
+        $query->execute(array('nimi' => $this->nimi, 'hinta' => $this->hinta, 'huutoaika' => $this->huutoaika, 'lisatty' => $this->lisatty, 'hintaosta' => $this->hintaosta, 'ostettu' => true, 'kuvaus' => $this->kuvaus, 'id' => $this->id));
+
+        $row = $query->fetch();
+    }
+
+    public function destroy() {
         $query = DB::connection()->prepare('DELETE FROM Asia WHERE id = :id');
         $query->execute(array('id' => $this->id));
     }
 
-    public static function all() {
+    public static function all($userid) {
         // Alustetaan kysely tietokantayhteydellämme
         $query = DB::connection()->prepare('SELECT * FROM Asia');
+        $query->execute();
         // Suoritetaan kysely
         $query->execute();
         // Haetaan kyselyn tuottamat rivit
@@ -91,7 +108,18 @@ class Asia extends BaseModel {
 
         // Käydään kyselyn tuottamat rivit läpi
         foreach ($rows as $row) {
-            // Tämä on PHP:n hassu syntaksi alkion lisäämiseksi taulukkoon :)
+            $valitaulu = Valitaulu::find($row['id']);
+            $huutaja;
+            if (is_null($valitaulu->huutaja_id)) {
+                $huutaja = null;
+            } else {
+                $huutaja = User::find($valitaulu->huutaja_id);
+                $huutaja = $huutaja->nimi;
+            }
+            $luoja = User::find($valitaulu->luoja_id);
+            $luoja = $luoja->nimi;
+            $sameuser2 = $valitaulu->luoja_id == $userid;
+            $nobidder = is_null($valitaulu->huutaja_id);
             $asiat[] = new Asia(array(
                 'id' => $row['id'],
                 'nimi' => $row['nimi'],
@@ -100,7 +128,11 @@ class Asia extends BaseModel {
                 'lisatty' => $row['lisatty'],
                 'hintaosta' => $row['hintaosta'],
                 'ostettu' => $row['ostettu'],
-                'kuvaus' => $row['kuvaus']
+                'huutaja' => $huutaja,
+                'kuvaus' => $row['kuvaus'],
+                'sameuser' => $sameuser2,
+                'nobidder' => $nobidder,
+                'luoja' => $luoja
             ));
         }
 

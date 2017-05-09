@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>HuudataiOsta</h1>
+
+{% if user_logged_in %}
+<h1>Käyttäjän {{user_logged_in.name}} huutokauppa</h1>
+{% endif %}
+
+{% if errors %}
+<div class="alert alert-danger">
+    <ul>
+        {% for error in errors %}
+        <li>{{error}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Nimi</th>
+            <th>hinta</th>
+            <th>huutoaika</th>
+            <th>lisätty</th>
+            <th>hintaosta</th>
+            <th>ostettu</th>
+            <th>huutaja</th>
+            <th>kuvaus</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for asia in asiat %}
+        <tr>
+            <td>{{asia.nimi}}</td>
+            <td>{{asia.hinta}}</td>
+            <td>{{asia.huutoaika}}</td>
+            <td>{{asia.lisatty}}</td>
+            <td>{{asia.hintaosta}}</td>
+            <td>{{asia.huutaja}}</td>
+            <td>{{asia.kuvaus}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <form method="post" action="{{base_path}}/asia/{{asia.id}}/lyo">
+        <div class="form-group">
+            <label>korotus huuto hinnasta</label>
+            <input name="hinta" class="form-control" type="text">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Huuda</button>
+        </div>
+    </form>
+    <form method="post" action="{{base_path}}/asia/{{asia.id}}/ostettu">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Osta (ostohita ylempänä)</button>
+        </div>
+    </form>
+</table>
+{% endblock %}

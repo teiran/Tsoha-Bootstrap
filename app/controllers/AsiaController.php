@@ -15,7 +15,13 @@ class AsiaController extends BaseController {
 
     public static function index() {
         // Haetaan kaikki pelit tietokannasta
-        $asiat = Asia::all();
+        $_user_logged_in = self::get_user_logged_in();
+        if (is_null($_user_logged_in)) {
+            $asiat = Asia::all(null);
+        } else {
+            $asiat = Asia::all($_user_logged_in->id);
+        }
+
         // Renderöidään views/game kansiossa sijaitseva tiedosto index.html muuttujan $games datalla
         View::make('asia/index.html', array('asiat' => $asiat));
     }
@@ -62,21 +68,30 @@ class AsiaController extends BaseController {
 
     public static function edit($id) {
         self::check_logged_in();
+        $valitytaulu = Valitaulu::find($id);
+        if (!is_null($valitytaulu->huutaja_id)) {
+            Redirect::to('/asia');
+        }
         $asia = Asia::find($id);
         View::make('asia/edit.html', array('asia' => $asia));
     }
-    
-    public static function lyo($id){
+
+    public static function huudataiosta($id) {
         self::check_logged_in();
-        $user = self::get_user_logged_in();
+        $asia = Asia::find($id);
+        View::make('asia/huudataiosat.html', array('asia' => $asia));
+    }
+
+    public static function osta($id) {
+        self::check_logged_in();
         $params = $_POST;
+        $user = self::get_user_logged_in();
         $valitaulu = Valitaulu::find($id);
-        
         $attributes = array(
             'id' => $valitaulu->id,
             'luoja_id' => $valitaulu->luoja_id,
-            'asia_id' => $id,
-            'Huutaja_id' => $user->id
+            'asia_id' => $valitaulu->asia_id,
+            'huutaja_id' => $user->id
         );
         $valitaulu2 = new Valitaulu($attributes);
         $valitaulu2->update();
@@ -84,19 +99,59 @@ class AsiaController extends BaseController {
         $attributes = array(
             'id' => $id,
             'nimi' => $asia->nimi,
-            'hinta' => $asia->hinta + 1,
+            'hinta' => $asia->hinta,
             'huutoaika' => $asia->huutoaika,
             'hintaosta' => $asia->hintaosta,
             'lisatty' => $asia->lisatty,
             'kuvaus' => $asia->kuvaus
         );
-        $asia->update();
-        Redirect::to('/asia', array('message' => 'lyötyvetoa onnistuneesti'));
+        $asia->update2();
+        Redirect::to('/asia', array('message' => 'ostettu onnistuneesti'));
+    }
+
+    public static function lyo($id) {
+        self::check_logged_in();
+        $params = $_POST;
+        $user = self::get_user_logged_in();
+        $asia = Asia::find($id);
+        $attributes = array(
+            'id' => $id,
+            'nimi' => $asia->nimi,
+            'hinta' => $asia->hinta + $params['hinta'],
+            'huutoaika' => $asia->huutoaika,
+            'hintaosta' => $asia->hintaosta,
+            'lisatty' => $asia->lisatty,
+            'kuvaus' => $asia->kuvaus
+        );
+        $asia = new Asia($attributes);
+        $errors = $asia->errors();
+        if ($asia->hinta + $params['hinta'] <= $asia->hinta) {
+            View::make('asia/huudataiosat.html', array('errors' => "huudo tarvitsee olla isompi kuin hinnan (enemmän kuin 0)"));
+        }
+        if (count($errors) > 0) {
+            View::make('asia/huudataiosat.html', array('errors' => $errors, 'attributes' => $attributes));
+        } else {
+            $asia->update();
+            $valitaulu = Valitaulu::find($id);
+            $attributes = array(
+                'id' => $valitaulu->id,
+                'luoja_id' => $valitaulu->luoja_id,
+                'asia_id' => $valitaulu->asia_id,
+                'huutaja_id' => $user->id
+            );
+            $valitaulu2 = new Valitaulu($attributes);
+            $valitaulu2->update();
+            Redirect::to('/asia', array('message' => 'lyötyvetoa onnistuneesti'));
+        }
     }
 
     // Pelin muokkaaminen (lomakkeen käsittely)
     public static function update($id) {
         self::check_logged_in();
+        $valitytaulu = Valitaulu::find($id);
+        if (!is_null($valitytaulu->huutaja_id)) {
+            Redirect::to('/asia');
+        }
         $params = $_POST;
 
         $attributes = array(
@@ -125,6 +180,10 @@ class AsiaController extends BaseController {
     // Pelin poistaminen
     public static function destroy($id) {
         self::check_logged_in();
+        $valitytaulu = Valitaulu::find($id);
+        if (!is_null($valitytaulu->huutaja_id)) {
+            Redirect::to('/asia');
+        }
         // Alustetaan Game-olio annetulla id:llä
         $asia = new Asia(array('id' => $id));
         // Kutsutaan Game-malliluokan metodia destroy, joka poistaa pelin sen id:llä
